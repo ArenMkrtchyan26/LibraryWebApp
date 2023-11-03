@@ -1,4 +1,5 @@
 ﻿using BLL.ViewModels;
+using LibraryDAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace BLL.Services.Interfaces
     public interface IUserService
     {
         void Add(UserVM model);
+        bool CheckGet(string password);
     }
 }

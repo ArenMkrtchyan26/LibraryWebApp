@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text.Json.Serialization;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -13,19 +14,19 @@ namespace LibraryManagementSystem.Controllers
         private readonly HttpClient _client;
         public BookController()
         {
-            _client = new HttpClient(); 
+            _client = new HttpClient();
             _client.BaseAddress = baseAddress;
         }
         [HttpGet]
         public IActionResult Index()
         {
             List<BookAddEditVM> books = new List<BookAddEditVM>();
-            
-            
-            HttpResponseMessage response=_client.GetAsync(_client.BaseAddress+ "api/Book/GetAll").Result;
+
+
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "api/Book/GetAll").Result;
             if (response.IsSuccessStatusCode)
             {
-                string data=response.Content.ReadAsStringAsync().Result;
+                string data = response.Content.ReadAsStringAsync().Result;
                 books = JsonConvert.DeserializeObject<List<BookAddEditVM>>(data);
             }
             return View(books);
@@ -33,7 +34,7 @@ namespace LibraryManagementSystem.Controllers
         [HttpGet]
         public IActionResult FirstPage()
         {
-            
+
             return View();
         }
         [HttpGet]
@@ -53,50 +54,73 @@ namespace LibraryManagementSystem.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index","Book");
+                    return RedirectToAction("Index", "Book");
                 }
             }
             return View();
         }
         [HttpGet]
-        public IActionResult Login()
-        {
+        public IActionResult Login(string? value)
+        {if(value != null)
+            {
+                ViewBag.Message=value;
+                return View();
+            }
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddBooksUser(LoginUser model)
-        {
-            ViewBag.Pass = model.Password;
-            if (ModelState.IsValid)
+        { 
+            HttpResponseMessage responseRequest = await _client.GetAsync(_client.BaseAddress +
+                                               $"api/User/CheckUser?password={model.Password}");
+            if (responseRequest.IsSuccessStatusCode)
             {
-
-                List<BookAddEditVM> books = new List<BookAddEditVM>();
-                HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"api/Book/GetUserBooks?password={model.Password}");
-                if (response.IsSuccessStatusCode)
+                string check = responseRequest.Content.ReadAsStringAsync().Result;
+                ViewBag.Pass = model.Password;
+                if (ModelState.IsValid && check == "true")
                 {
-                    string data = response.Content.ReadAsStringAsync().Result;
-                    books = JsonConvert.DeserializeObject<List<BookAddEditVM>>(data);
-                    return View(books);
+
+                    List<BookAddEditVM> books = new List<BookAddEditVM>();
+                    HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"api/Book/GetUserBooks?password={model.Password}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string data = response.Content.ReadAsStringAsync().Result;
+                        books = JsonConvert.DeserializeObject<List<BookAddEditVM>>(data);
+                        return View(books);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login");
+                    }
                 }
                 else
                 {
-                    return RedirectToAction("Login");
+                    string message = "Invalid login or password";
+                  //  ModelState.AddModelError(string.Empty, "Login or password is incorrect.");
+                    return RedirectToAction("Login",new {value=message});
                 }
+
             }
-            return RedirectToAction("Login");
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Login or password is incorrect.");
+                return RedirectToAction("Login");
+            }
         }
+
+
         [HttpGet]
         public IActionResult Update(int id)
         {
-            ViewBag.BookId= id;
+            ViewBag.BookId = id;
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateBook(EditBookVM editVM,int Id)
+        public async Task<IActionResult> UpdateBook(EditBookVM editVM, int Id)
         {
-            editVM.ID=Id;
+            editVM.ID = Id;
             HttpResponseMessage response = await _client.PutAsJsonAsync("api/Book/Update", editVM);
 
             if (response.IsSuccessStatusCode)
@@ -109,7 +133,8 @@ namespace LibraryManagementSystem.Controllers
         public async Task<IActionResult> DeleteAsync(int Id)
         {
             HttpResponseMessage response = await _client.DeleteAsync(_client.BaseAddress + $"api/Book/DeleteBook?Id={Id}");
-            return RedirectToAction("Index","Book");
+            return RedirectToAction("Index", "Book");
         }
     }
+
 }

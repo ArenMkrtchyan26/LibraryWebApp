@@ -25,6 +25,7 @@ namespace BLL.Services.Implimentations
         }
         public void Add(BookAddEditVM model,string pass)
         {
+
            Book book = new()
             {
                

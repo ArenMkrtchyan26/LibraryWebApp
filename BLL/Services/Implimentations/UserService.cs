@@ -39,7 +39,12 @@ namespace BLL.Services.Implimentations
                 _context.Users.Add(user);
                 _unitOfWork.Save();
             }
+     public   bool CheckGet(string password)
+        {
+            var user= _context.Users.FirstOrDefault(x => x.Password == password);
+            return user != null?true:false;
         }
+    }
 
     }
 

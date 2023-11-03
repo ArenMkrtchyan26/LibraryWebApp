@@ -1,7 +1,7 @@
 ﻿@model BLL.ViewModels.LoginUser
 
 <h2>SIGN IN</h2>
-
+<h5 style=" color:red">@ViewBag.Message</h5>
 <form method="post" asp-controller="Book" asp-action="AddBooksUser">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div>
