@@ -23,7 +23,7 @@ namespace BLL.ViewModels
         public int Quantity { get; set; }
         [Required]
         public bool IsIssued { get; set; }
-
+        public string? Upload { get; set; }
 
 
     }

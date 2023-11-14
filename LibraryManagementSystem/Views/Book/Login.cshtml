@@ -5,7 +5,7 @@
 <form method="post" asp-controller="Book" asp-action="AddBooksUser">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div>
-        <label asp-for="UserName"></label><br />
+        <label asp-for="UserName">Login</label><br />
         <input asp-for="UserName" />
         <span asp-validation-for="UserName"></span>
     </div>

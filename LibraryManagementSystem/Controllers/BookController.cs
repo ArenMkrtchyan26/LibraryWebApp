@@ -1,5 +1,6 @@
 ﻿using BLL.ViewModels;
 using LibraryDAL.Entities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -10,12 +11,14 @@ namespace LibraryManagementSystem.Controllers
 {
     public class BookController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         Uri baseAddress = new Uri("https://localhost:7073/");
         private readonly HttpClient _client;
-        public BookController()
+        public BookController(IWebHostEnvironment webHostEnvironment)
         {
             _client = new HttpClient();
             _client.BaseAddress = baseAddress;
+            _webHostEnvironment = webHostEnvironment;
         }
         [HttpGet]
         public IActionResult Index()
@@ -37,15 +40,25 @@ namespace LibraryManagementSystem.Controllers
 
             return View();
         }
-        [HttpGet]
+        [HttpGet] 
         public IActionResult AddBook(string pass)
         {
             ViewBag.Pass = pass;
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddBook(BookAddEditVM bookVM, string pass)
-        {
+        public async Task<IActionResult> AddBook(BookAddEditVM bookVM, string pass,IFormFile image)
+        {string fileName=string.Empty;
+            if (image != null)
+            {
+                fileName = Guid.NewGuid() + System.IO.Path.GetExtension(image.FileName);
+                string path = $"{_webHostEnvironment.WebRootPath}/images/books/{fileName}";
+                //bookVM.ImagePath = path;
+                using var fileStream = new FileStream(path, FileMode.Create);
+                image.CopyTo(fileStream);
+            }
+            else { }
+            bookVM.Upload = fileName;
             bookVM.IsIssued = true;
             if (ModelState.IsValid)
             {

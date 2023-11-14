@@ -4,6 +4,7 @@ using BLL.ViewModels;
 using LibraryDAL;
 using LibraryDAL.Entities;
 using LibraryDAL.Services.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,8 @@ namespace BLL.Services.Implimentations
 {
     public class BookService : IBookService
     {
-        
-       private readonly IUnitOfWork _unitOfWork;
+      //  private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IUnitOfWork _unitOfWork;
        private readonly DataContext _context;
         public BookService(IUnitOfWork unitOfWork,DataContext context)
         {
@@ -35,6 +36,7 @@ namespace BLL.Services.Implimentations
                 User=_context.Users.FirstOrDefault(us=>us.Password==pass),
                 UserId= _context.Users.FirstOrDefault(us => us.Password == pass).Id,
                 Price = model.Price,
+                ImagePath = model.Upload,
                 Quantity=model.Quantity,
               
 

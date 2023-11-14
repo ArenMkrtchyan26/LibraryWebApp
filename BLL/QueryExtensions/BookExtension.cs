@@ -34,7 +34,7 @@ namespace BLL.QueryExtensions
                 Price = b.Price,
                 Quantity = b.Quantity,
                 IsIssued = b.IsIssued,
-              //  UserId = b.UserId,
+                Upload=b.ImagePath,
             }).AsNoTracking().ToList();
             return books;
         }

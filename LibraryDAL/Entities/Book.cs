@@ -18,6 +18,7 @@ namespace LibraryDAL.Entities
         public User User { get; set; }
         [ForeignKey("User")]
         public int UserId { get; set; }
+        public string ImagePath { get; set; }
 
     }
 }

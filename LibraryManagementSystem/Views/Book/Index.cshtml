@@ -4,53 +4,46 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<style>
+    .book-container {
+        width: 200px;
+        height: 300px;
+        margin: 10px;
+        float: left;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .book-details {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .book-image {
+        max-width: 100%;
+        max-height: 150px;
+        margin-bottom: 10px;
+    }
+</style>
 
 <p>
     <a asp-action="FirstPage" asp-controller="Book">Go BACK</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsIssued)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuthorName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsIssued)
-            </td>
-                        
-        </tr>
+
+@foreach (var item in Model)
+{
+    <div class="book-container">
+        @if (!string.IsNullOrEmpty(item.Upload))
+        {
+            <img class="book-image" src="~/images/books/@Html.DisplayFor(modelItem => item.Upload)" alt="Book Image">
+        }
+        <div class="book-details">
+            <h3>@Html.DisplayFor(modelItem => item.Name)</h3>
+            <p>@Html.DisplayFor(modelItem => item.AuthorName)</p>
+            <p>Price: @Html.DisplayFor(modelItem => item.Price)</p>
+            <p>Quantity: @Html.DisplayFor(modelItem => item.Quantity)</p>
+            <p>Is Issued: @Html.DisplayFor(modelItem => item.IsIssued)</p>
+        </div>
+    </div>
 }
-    </tbody>
-</table>

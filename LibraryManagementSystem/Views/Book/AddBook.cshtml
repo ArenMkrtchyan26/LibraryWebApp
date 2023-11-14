@@ -1,12 +1,13 @@
 ﻿@model BLL.ViewModels.BookAddEditVM
 
 @{
+
     ViewData["Title"] = "User registration";
 }
 <h1>Add Book</h1>
 <div class="row">
     <div class="col-md-12">
-        <form method="post">
+        <form  method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger"></div>
             
                 <div>
@@ -29,11 +30,18 @@
                     <input asp-for="Quantity" class="form-control" />
                     <span asp-validation-for="Quantity" class="text-danger"></span>
                 </div>
+           @* <div>
+                <label asp-for="Upload"> </label>
+                <input asp-for="Upload" class="form-control" />
+                <span asp-validation-for="Upload" class="text-danger"></span>
+            </div>*@
                 <div>
                     <a asp-action="AddBook" asp-controller="Book" asp-route-pass="@ViewBag.Pass"></a>
                 </div>
-            
-                <div>
+            <div>
+
+                <input type="file" name="image" value="Upload" accept="image/*">
+      
                     <button type="submit" class="btn btn-primary mt-2">Add Book</button>
                 </div>
 
